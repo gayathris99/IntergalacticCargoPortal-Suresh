@@ -9,9 +9,14 @@ const cargoRoutes = require('./routes/cargo')
 
 const app = express();
 
+const allowedOrigins = [
+    'http://localhost:5173',
+    process.env.FRONTEND_URL
+].filter(Boolean)
+
 app.use(cors({
     credentials: true,
-    origin: 'http://localhost:5173'
+    origin: allowedOrigins
 }))
 
 app.use(express.json())
