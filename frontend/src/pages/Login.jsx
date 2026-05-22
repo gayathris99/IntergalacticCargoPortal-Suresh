@@ -27,8 +27,6 @@ export default function Login() {
 
     return (
         <div className="min-h-screen bg-primary flex items-center justify-center relative overflow-hidden">
-
-            {/* Scanline overlay */}
             <div className="absolute inset-0 pointer-events-none"
                 style={{ background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,180,255,0.015) 2px, rgba(0,180,255,0.015) 4px)' }}>
             </div>
@@ -36,15 +34,12 @@ export default function Login() {
             <div className="relative z-10 w-full max-w-sm mx-4">
                 <div className="bg-surface border border-border p-10 relative">
 
-                    {/* Logo */}
                     <div className="flex flex-col items-center mb-8">
                         <img src={logo} alt="IGC Logo" className="w-12 h-12 mb-3" />
                         <h1 className="text-accent text-base font-black tracking-widest">IGC PORTAL</h1>
                         <p className="text-muted text-[10px] tracking-widest mt-1">AUTHENTICATION REQUIRED</p>
                         <div className="w-10 h-px bg-accent opacity-50 mt-3"></div>
                     </div>
-
-                    {/* Form */}
                     <form onSubmit={handleLogin}>
                         <div className="mb-4">
                             <label className="text-muted text-[9px] tracking-widest block mb-1">IDENTITY</label>
