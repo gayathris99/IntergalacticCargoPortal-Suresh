@@ -78,7 +78,7 @@ CREATE TABLE users (
 
 CREATE TABLE cargo (
   id SERIAL PRIMARY KEY,
-  cargo_id TEXT NOT NULL,
+  cargo_id TEXT NOT NULL UNIQUE,
   weight FLOAT NOT NULL,
   destination TEXT NOT NULL,
   date TEXT NOT NULL
