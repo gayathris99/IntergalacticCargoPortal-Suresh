@@ -11,6 +11,8 @@ export default function Dashboard() {
     const [error, setError] = useState('')
     const [uploadMessage, setUploadMessage] = useState('')
     const [uploading, setUploading] = useState(false)
+    const [duplicates, setDuplicates] = useState([])
+
     const role = localStorage.getItem('role')
 
 
@@ -31,8 +33,11 @@ export default function Dashboard() {
         setError('')
         try {
             const data = await uploadManifest(file)
-            setUploadMessage(`Saved: ${data.savedCargos.length} · Skipped: ${data.removedCargos.length}`)
-            fetchCargo()
+            setUploadMessage(`Saved: ${data?.savedCargos?.length} · Skipped: ${data?.removedCargos?.length}`)
+            if (data?.duplicateCargos?.length > 0) {
+                setDuplicates(data.duplicateCargos)
+            }
+            fetchCargo()    
         } catch (err) {
             setError(err.message)
         } finally {
@@ -62,6 +67,18 @@ export default function Dashboard() {
                 <StatusCards cargo={cargo} role={role}/>
 
                 {uploadMessage && <p className="text-accent text-[9px] tracking-wider mb-4">{uploadMessage}</p>}
+
+                {duplicates.length > 0 && (
+                    <div className="bg-surface border border-danger p-3 mb-4">
+                        <p className="text-danger text-[8px] tracking-widest mb-2">
+                            {duplicates.length} DUPLICATE CARGO IDs SKIPPED:
+                        </p>
+                        <p className="text-foreground text-[9px] tracking-wider">
+                            {duplicates.join(', ')}
+                        </p>
+                    </div>
+                )}
+
                 {error && <p className="text-danger text-[9px] tracking-wider mb-4">{error}</p>}
 
                 {loading ? (

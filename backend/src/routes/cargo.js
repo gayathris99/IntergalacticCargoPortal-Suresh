@@ -3,6 +3,8 @@ const verifyToken = require('../middleware/auth')
 const pool = require('../db')
 
 const router = express.Router()
+// PSQL Unique id violation code number
+const UNIQUE_VIOLATION = '23505'
 
 const isPrimeNumber = (num) => {
     if (num < 2) return false
@@ -33,6 +35,7 @@ router.post('/upload', verifyToken, async (req, res) => {
     const fileContent = req.files.manifest.data.toString('utf8').split('\n')
     const savedCargos = []
     const removedCargos = []
+    const duplicateCargos = []
 
     for (const content of fileContent) {
         if (!content.trim()) continue
@@ -52,17 +55,26 @@ router.post('/upload', verifyToken, async (req, res) => {
             continue
         }
 
-        await pool.query(
-            'INSERT INTO cargo (cargo_id, weight, destination, date) VALUES ($1, $2, $3, $4)',
-            [cargoId.trim(), weight, destination.trim(), date]
-        )
-        savedCargos.push(cargoId.trim())
+        try {
+            await pool.query(
+                'INSERT INTO cargo (cargo_id, weight, destination, date) VALUES ($1, $2, $3, $4)',
+                [cargoId.trim(), weight, destination.trim(), date]
+            )
+            savedCargos.push(cargoId.trim())
+        } catch (err) {
+            if (err.code === UNIQUE_VIOLATION) {
+                duplicateCargos.push(cargoId.trim())
+            } else {
+                throw err
+            }
+        }    
     }
 
     res.status(200).json({
         message: 'Manifest uploaded successfully.',
         savedCargos,
-        removedCargos
+        removedCargos,
+        duplicateCargos
     })
 })
 
